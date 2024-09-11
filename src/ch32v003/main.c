@@ -1,8 +1,12 @@
 #include "ch32v003fun.h"
-#include "core.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <zforth.h>
+
+#include "modules.h"
+
+
+// TODO: use load instead of eval to save memory
 
 #define BACKSPACE 0x08
 #define DELETE    0x7F
@@ -15,20 +19,21 @@
 
 typedef enum
 {
-   USER_SYSCALL_RESET = 0,
-   USER_SYSCALL_PEEK = 1,
-   USER_SYSCALL_POKE = 2,
-   USER_SYSCALL_MAX
+    USER_SYSCALL_RESET = 0,
+    USER_SYSCALL_PEEK = 1,
+    USER_SYSCALL_POKE = 2,
+    USER_SYSCALL_CALL = 3,
+    USER_SYSCALL_MAX
 } user_syscall_t;
 
 static const char *const syscalls[USER_SYSCALL_MAX] = {
-   [USER_SYSCALL_RESET] = "reset",
-   [USER_SYSCALL_PEEK] = "peek",
-   [USER_SYSCALL_POKE] = "poke",
+    [USER_SYSCALL_RESET] = "reset",
+    [USER_SYSCALL_PEEK] = "peek",
+    [USER_SYSCALL_POKE] = "poke",
+    [USER_SYSCALL_CALL] = "call",
 };
 
 static char buf[32] = {0};
-// struct _reent *_impure_ptr = 0;
 
 static uint8_t count = 0;
 static uint8_t countLast = 0;
@@ -53,17 +58,24 @@ int _write(int fd, const char *buf, int size)
 
 static zf_result load_syscalls(void)
 {
-   char buf[32];
+    char buf[32];
     for (int i = 0; i < USER_SYSCALL_MAX; i++)
     {
-       snprintf(buf, sizeof(buf), ": %s %d sys ;", syscalls[i], i);
-       zf_result r = zf_eval(buf);
-       if (r != ZF_OK)
-       {
-           return r;
-       }
+        snprintf(buf, sizeof(buf), ": %s %d sys ;", syscalls[i], i + ZF_SYSCALL_USER);
+        zf_result res = zf_eval(buf);
+        if (res != ZF_OK)
+        {
+            return res;
+        }
     }
     return ZF_OK;
+}
+
+static int bytes_used(void)
+{
+    zf_cell here = 0;
+    (void)zf_uservar_get(ZF_USERVAR_HERE, &here);
+    return here;
 }
 
 int main(void)
@@ -83,11 +95,22 @@ int main(void)
     r = load_syscalls();
     print_result(r);
 
-    printf("Forth Loading core...");
-    r = zf_eval(core_str);
-    print_result(r);
+    puts("Forth Loading modules...");
+    for (int i = 0; i < MODULES_COUNT; i++)
+    {
+        printf("Would you like to load '%s' (y/n): ", modules[i].name);
+        const char answer = getchar();
+        printf("%c ...", answer);
+        if (answer != 'y')
+        {
+            puts("SKIPPED");
+            continue;
+        }
+        r = zf_eval(modules[i].data);
+        print_result(r);
+    }
 
-    puts("Forth REPL:");
+    printf("Welcome to zForth, %d bytes used\n", bytes_used());
 
     uint8_t bufEnd = 0;
     for (;;)
@@ -125,13 +148,12 @@ zf_input_state zf_host_sys(zf_syscall_id id, const char *input)
 {
     switch (id)
     {
-
         case ZF_SYSCALL_EMIT:
             putchar((char)zf_pop());
             break;
 
         case ZF_SYSCALL_PRINT:
-            printf(ZF_CELL_FMT "\n", zf_pop());
+            printf(ZF_CELL_FMT " ", zf_pop());
             break;
 
         case ZF_SYSCALL_TELL:
@@ -150,27 +172,37 @@ zf_input_state zf_host_sys(zf_syscall_id id, const char *input)
             break;
     }
 
-    const user_syscall_t user_syscall = id & (ZF_SYSCALL_USER - 1);
-    switch (user_syscall)
+    if (id >= ZF_SYSCALL_USER)
     {
-        case USER_SYSCALL_RESET:
-            putchar('\n');
-            NVIC_SystemReset();
-            break;
+        const user_syscall_t user_syscall = id - ZF_SYSCALL_USER;
+        switch (user_syscall)
+        {
+            case USER_SYSCALL_RESET:
+                putchar('\n');
+                NVIC_SystemReset();
+                break;
 
-         case USER_SYSCALL_PEEK:
-            zf_push(*(zf_cell *)zf_pop());
-            break;
+            case USER_SYSCALL_PEEK:
+                zf_cell ptr = zf_pop() & 0xFFFFFFFC; // align to 4 bytes
+                zf_push(*(zf_cell *)ptr);
+                break;
 
-         case USER_SYSCALL_POKE:
-            zf_cell val = zf_pop();
-            zf_cell addr = zf_pop();
-            *(zf_cell *)addr = val;
-            break;
+            case USER_SYSCALL_POKE:
+                zf_cell val = zf_pop();
+                zf_cell addr = zf_pop() & 0xFFFFFFFC; // align to 4 bytes
+                *(zf_cell *)addr = val;
+                break;
 
-        default:
-            printf("UNHANDLED SYSCALL %d\n", id);
-            break;
+            case USER_SYSCALL_CALL:
+                zf_cell func = zf_pop() & 0xFFFFFFFC; // align to 4 bytes
+                zf_cell ret = ((zf_cell(*)(void))func)();
+                zf_push(ret);
+                break;
+
+            default:
+                printf("UNHANDLED SYSCALL %d\n", user_syscall);
+                break;
+        }
     }
 
     return 0;

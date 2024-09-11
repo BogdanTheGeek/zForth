@@ -10,7 +10,7 @@ extern "C"
 #include <stdarg.h>
 #include <stdint.h>
 
-#include "zfconf.h"
+#include <zfconf.h>
 
 /* Abort reasons */
 

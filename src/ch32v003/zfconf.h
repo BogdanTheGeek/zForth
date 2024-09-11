@@ -1,5 +1,4 @@
-#ifndef zfconf
-#define zfconf
+#pragma once
 
 /* Set to 1 to add tracing support for debugging and inspection. Requires the
  * zf_host_trace() function to be implemented. Adds about one kB to .text and
@@ -7,6 +6,7 @@
  * tracing at run time when calling zf_init() or by setting the 'trace' user
  * variable to 1 */
 
+#include <stdint.h>
 #define ZF_ENABLE_TRACE 0
 
 
@@ -29,7 +29,7 @@
  * type. This adds a few hundred bytes of .text. Check the memaccess.zf file for
  * examples how to use these operations */
 
-#define ZF_ENABLE_TYPED_MEM_ACCESS 0
+#define ZF_ENABLE_TYPED_MEM_ACCESS 1
 
 
 /* Type to use for the basic cell, data stack and return stack. Choose a signed
@@ -58,4 +58,3 @@ typedef unsigned int zf_addr;
 #define ZF_DSTACK_SIZE 8
 #define ZF_RSTACK_SIZE 8
 
-#endif
