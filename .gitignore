@@ -9,3 +9,12 @@ zforth.save
 
 **/.last.session
 **/.DS_Store
+
+*.hex
+*.bin
+*.elf
+*.map
+*.lst
+compile_commands.json
+.clangd
+**/.cache
