@@ -27,7 +27,7 @@
 : ffemit ( n -- ) >nib .hex .hex ;
 : ffffemit ( n -- ) >nib >nib >nib { .hex 4 x} ;
 : @LSB ( addr -- LSB ) 2 @@ 255 & ;
-: between? ( n low_lim high_lim -- bool ) 2 pick > rot rot > & ; 
+: between? ( n low_lim high_lim -- bool ) 2 pick > rot rot > & ;
 : 8hex ( a -- a_new ) { dup @LSB ffemit 32 emit 1+ 8 x} 32 emit ;
 : 16ascii ( a -- a_new ) 124 emit { dup @LSB dup 31 127 between? if emit else drop 46 emit fi 1+ 16 x} 124 emit ;
 : .addr ( a -- ) ffffemit ."    " ;

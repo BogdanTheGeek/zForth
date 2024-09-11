@@ -1,3 +1,7 @@
+
+( This file defines operations for accessing fixed sized data in the dictionary. 
+  These operations require ZF_ENABLE_TYPED_MEM_ACCESS to be enabled in zforth.h )
+
 : !c 1 !! ; : !u8 2 !! ; : !u16 3 !! ; : !u32 4 !! ; : !s8 5 !! ; : !s16 6 !! ; : !s32 7 !! ;
 : @c 1 @@ ; : @u8 2 @@ ; : @u16 3 @@ ; : @u32 4 @@ ; : @s8 5 @@ ; : @s16 6 @@ ; : @s32 7 @@ ;
 : ,c 1 ,, ; : ,u8 2 ,, ; : ,u16 3 ,, ; : ,u32 4 ,, ; : ,s8 5 ,, ; : ,s16 6 ,, ; : ,s32 7 ,, ;

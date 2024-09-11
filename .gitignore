@@ -21,3 +21,5 @@ compile_commands.json
 
 **/*_gen.h
 modules.h
+*.zfa
+z4c

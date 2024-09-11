@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <zforth.h>
 
+#include "core_gen.h"
 #include "modules.h"
-
 
 // TODO: use load instead of eval to save memory
 
@@ -78,27 +78,56 @@ static int bytes_used(void)
     return here;
 }
 
+static void load_core(void)
+{
+    size_t dict_len = 0;
+    char *const dict_base = zf_dump(&dict_len);
+    if (dict_len < sizeof(core_gen_str))
+    {
+        puts("ERROR: core dictionary too big");
+        return;
+    }
+
+    for (size_t i = 0; i < sizeof(core_gen_str); i++)
+    {
+        dict_base[i] = core_gen_str[i];
+    }
+
+    puts("OK");
+}
+
 int main(void)
 {
     SystemInit();
     WaitForDebuggerToAttach();
 
-    printf("Forth Initialising...");
+    printf("Initialising zForth...");
     zf_init(1);
     puts("OK");
 
-    printf("Forth Bootstraping...");
-    zf_bootstrap();
-    puts("OK");
+    printf("Load core module (y/n): ");
+    const char answer = getchar();
+    printf("%c ...", answer);
+    if (answer != 'y')
+    {
+        printf("bootstraping...");
+        zf_bootstrap();
+        puts("OK");
+    }
+    else
+    {
+        load_core();
+    }
 
-    printf("Forth Loading syscalls...");
+    printf("Loading syscalls...");
     r = load_syscalls();
     print_result(r);
 
-    puts("Forth Loading modules...");
+    puts("Loading modules...");
     for (int i = 0; i < MODULES_COUNT; i++)
     {
-        printf("Would you like to load '%s' (y/n): ", modules[i].name);
+        printf("Free memory: %d/%d bytes\n", ZF_DICT_SIZE - bytes_used(), ZF_DICT_SIZE);
+        printf("Load '%s'(%d) module (y/n): ", modules[i].name, (int)modules[i].size);
         const char answer = getchar();
         printf("%c ...", answer);
         if (answer != 'y')
