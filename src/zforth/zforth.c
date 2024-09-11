@@ -1,5 +1,4 @@
 
-#include <ctype.h>
 #include <string.h>
 #include <setjmp.h>
 
@@ -154,6 +153,10 @@ static void trace(const char *fmt, ...) { }
 static const char *op_name(zf_addr addr) { return NULL; }
 #endif
 
+static int isspace(int c)
+{
+   return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+}
 
 /*
  * Handle abort by unwinding the C stack and sending control back into

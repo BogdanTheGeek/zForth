@@ -6,3 +6,6 @@ go
 zforth
 zforth.save
 .zforth.hist
+
+**/.last.session
+**/.DS_Store
