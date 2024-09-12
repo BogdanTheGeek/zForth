@@ -1,5 +1,4 @@
 
-
 ZF_ROOT:=../../forth
 
 # Forth files compiled into the core

@@ -68,7 +68,6 @@ int main(int argc, char **argv)
     zf_cell start = 0;
 #endif
 
-
     // Include files from command line
     for (int i = 0; i < argc; i++)
     {
@@ -233,7 +232,7 @@ static zf_result do_eval(const char *src, int line, const char *buf)
     zf_result rv = zf_eval(buf);
     if (rv != ZF_OK)
     {
-       print_result(rv);
+        print_result(rv);
     }
     return rv;
 }

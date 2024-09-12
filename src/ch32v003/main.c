@@ -331,19 +331,45 @@ static void print_result(zf_result r)
     char *msg;
     switch (r)
     {
-        case ZF_OK: msg = "OK"; break;
-        case ZF_ABORT_INTERNAL_ERROR: msg = "INTERNAL_ERROR"; break;
-        case ZF_ABORT_OUTSIDE_MEM: msg = "OUTSIDE_MEM"; break;
-        case ZF_ABORT_DSTACK_UNDERRUN: msg = "DSTACK_UNDERRUN"; break;
-        case ZF_ABORT_DSTACK_OVERRUN: msg = "DSTACK_OVERRUN"; break;
-        case ZF_ABORT_RSTACK_UNDERRUN: msg = "RSTACK_UNDERRUN"; break;
-        case ZF_ABORT_RSTACK_OVERRUN: msg = "RSTACK_OVERRUN"; break;
-        case ZF_ABORT_NOT_A_WORD: msg = "NOT_A_WORD"; break;
-        case ZF_ABORT_COMPILE_ONLY_WORD: msg = "COMPILE_ONLY_WORD"; break;
-        case ZF_ABORT_INVALID_SIZE: msg = "INVALID_SIZE"; break;
-        case ZF_ABORT_DIVISION_BY_ZERO: msg = "DIVISION_BY_ZERO"; break;
-        case ZF_ABORT_INVALID_USERVAR: msg = "INVALID_USERVAR"; break;
-        case ZF_ABORT_EXTERNAL: msg = "EXTERNAL"; break;
+        case ZF_OK:
+            msg = "OK";
+            break;
+        case ZF_ABORT_INTERNAL_ERROR:
+            msg = "INTERNAL_ERROR";
+            break;
+        case ZF_ABORT_OUTSIDE_MEM:
+            msg = "OUTSIDE_MEM";
+            break;
+        case ZF_ABORT_DSTACK_UNDERRUN:
+            msg = "DSTACK_UNDERRUN";
+            break;
+        case ZF_ABORT_DSTACK_OVERRUN:
+            msg = "DSTACK_OVERRUN";
+            break;
+        case ZF_ABORT_RSTACK_UNDERRUN:
+            msg = "RSTACK_UNDERRUN";
+            break;
+        case ZF_ABORT_RSTACK_OVERRUN:
+            msg = "RSTACK_OVERRUN";
+            break;
+        case ZF_ABORT_NOT_A_WORD:
+            msg = "NOT_A_WORD";
+            break;
+        case ZF_ABORT_COMPILE_ONLY_WORD:
+            msg = "COMPILE_ONLY_WORD";
+            break;
+        case ZF_ABORT_INVALID_SIZE:
+            msg = "INVALID_SIZE";
+            break;
+        case ZF_ABORT_DIVISION_BY_ZERO:
+            msg = "DIVISION_BY_ZERO";
+            break;
+        case ZF_ABORT_INVALID_USERVAR:
+            msg = "INVALID_USERVAR";
+            break;
+        case ZF_ABORT_EXTERNAL:
+            msg = "EXTERNAL";
+            break;
     }
     puts(msg);
 }

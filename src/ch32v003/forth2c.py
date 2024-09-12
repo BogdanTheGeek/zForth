@@ -61,7 +61,7 @@ if 0:
 
 file_name = file_input.split("/")[-1]
 name = file_name.split(".")[0] + "_gen_str"
-sys.stdout.write(f"const char {name}[] = {{\n")
+sys.stdout.write(f"const char {name}[] = {{\n    ")
 
 
 def to_value(byte):
