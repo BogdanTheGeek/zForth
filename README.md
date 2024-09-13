@@ -1,9 +1,37 @@
-
-![zForth](/zforth.png)
-
 zForth
 ======
 
+Fork of (original zForth)[https://github.com/zevv/zForth] for my own fun and 
+entertainment.
+
+I would like to start by saying that the original project is an amazing
+accomplishment and I am incredibly greatful for its existance.
+It is a master class in code/design optimisation for resouce limited targets.
+
+I am very happy for people to get in touch, submit issue and contribute PRs.
+That being said, I do want to re-itterate that this fork only exists for my
+own enjoyment.
+
+Some of the goals of this fork may not match those of the original.
+
+### Shared goals:
+ - Be small: my main interest in platforms with very little RAM (as low as 2k)
+ - Flexible data types
+ - Easy interfacing with C
+
+### My Goals:
+ - Good documentation
+ - Runtime loading of modules (pre-compiled or interpreted)
+ - Consistent formatting
+ - Minimise dependencies, including those in stdlib.c
+
+### Anti-Goals:
+ - Maintain ANSI C compatibility. I will target C11.
+ - Maintain compatibility with the original project.
+ - Support any specific platform. I will accept PRs for small things.
+ - Make something useful. This is only for fun.
+
+# Original Description
 
 From Wikipedia:
 
@@ -262,5 +290,3 @@ r»0
  0032 0000 ┊  (exit) r«0 
 
 ````
-### Dependencies
-- libreadline-dev 
